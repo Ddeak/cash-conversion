@@ -1,6 +1,6 @@
 import { CircularProgress } from "@mui/material";
 
-const Loading = ({}) => {
+const Loading = () => {
   return <CircularProgress />;
 };
 

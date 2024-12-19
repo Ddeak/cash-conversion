@@ -1,10 +1,11 @@
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import { Currency } from "../types/currencies";
 
 type CurrencySelectProps = {
   id: string;
-  selectedCurrency: string;
-  currencies: string[];
-  setSelectedCurrency: (currency: string) => void;
+  currencies: Currency[];
+  setSelectedCurrency: (currency: Currency) => void;
+  selectedCurrency?: Currency;
 };
 
 const CurrencySelect = ({
@@ -15,16 +16,23 @@ const CurrencySelect = ({
 }: CurrencySelectProps) => {
   return (
     <FormControl fullWidth>
-      <InputLabel id={`${id}-label`}>Currnecy</InputLabel>
+      <InputLabel id={`${id}-label`}>{id}</InputLabel>
       <Select
         labelId={`${id}-label`}
         id={id}
         value={selectedCurrency}
-        label="Currency"
-        onChange={(e) => setSelectedCurrency(e.target.value)}
+        label={id}
+        onChange={(e) => {
+          const found = currencies.find(
+            (currency) => currency.short_code === e.target.value
+          );
+          if (found) setSelectedCurrency(found);
+        }}
       >
         {currencies.map((currency) => (
-          <MenuItem value={currency}>{currency}</MenuItem>
+          <MenuItem value={currency.short_code}>
+            {currency.name} ({currency.symbol})
+          </MenuItem>
         ))}
       </Select>
     </FormControl>

@@ -1,19 +1,10 @@
 import "./App.css";
-import CurrencySelect from "./components/CurrencySelect";
+import Homepage from "./pages/Homepage";
 
 function App() {
-  const temp = (curr: string) => {
-    console.log("curr", curr);
-  };
-
   return (
     <div className="App">
-      <CurrencySelect
-        id="currency1"
-        selectedCurrency="GB"
-        currencies={["GB", "EU"]}
-        setSelectedCurrency={temp}
-      />
+      <Homepage />
     </div>
   );
 }
