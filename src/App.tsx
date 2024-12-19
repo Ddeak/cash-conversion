@@ -1,24 +1,19 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import CurrencySelect from "./components/CurrencySelect";
 
 function App() {
+  const temp = (curr: string) => {
+    console.log("curr", curr);
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <CurrencySelect
+        id="currency1"
+        selectedCurrency="GB"
+        currencies={["GB", "EU"]}
+        setSelectedCurrency={temp}
+      />
     </div>
   );
 }
