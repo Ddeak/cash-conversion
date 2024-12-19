@@ -1,11 +1,14 @@
-import { AppBar, Grid2, Toolbar, Typography } from "@mui/material";
+import { AppBar, Button, Grid2, Toolbar, Typography } from "@mui/material";
+import HorizIcon from "@mui/icons-material/SwapHoriz";
 import { useEffect, useState } from "react";
 import { getCurrencies } from "../api/currencies";
 import { Currency } from "../types/currencies";
 import CurrencySelect from "../components/CurrencySelect";
 import Loading from "../components/Loading";
+import CurrencyInput from "../components/CurrnecyInput";
 
 const Homepage = () => {
+  const [convert, setConvert] = useState("");
   const [fromCurrency, setFromCurrency] = useState<Currency>();
   const [toCurrency, setToCurrency] = useState<Currency>();
   const [currencies, setCurrencies] = useState<Currency[]>([]);
@@ -56,6 +59,15 @@ const Homepage = () => {
           currencies={currencies}
           setSelectedCurrency={(currency) => setToCurrency(currency)}
         />
+
+        <CurrencyInput
+          value={convert}
+          onChange={(value) => setConvert(value)}
+        />
+
+        <Button variant="outlined" startIcon={<HorizIcon />}>
+          Convert
+        </Button>
       </Grid2>
     </Grid2>
   );

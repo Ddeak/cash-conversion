@@ -29,6 +29,7 @@ const CurrencySelect = ({
           if (found) setSelectedCurrency(found);
         }}
       >
+        <MenuItem value={undefined}></MenuItem>
         {currencies.map((currency) => (
           <MenuItem value={currency.short_code}>
             {currency.name} ({currency.symbol})
