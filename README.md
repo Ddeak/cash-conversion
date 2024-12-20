@@ -20,3 +20,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 Whilst developing the application, I was attempting to get the /v1/convert API to return, having provided it with the parameters expected in the api documentation.
 
 The server returned a 500 error, which according to the documentation is out-with my control to fix. Due to this, I was not able to get the latter half the of the expected requirements done.
+
+#### Improvements:
+
+- I have done some preparation work for errors, however they are currently not shown on screen. The user should be informed especially in the case of API failures, and be presented with an appropriate error message in some form.
