@@ -1,7 +1,14 @@
-import { AppBar, Button, Grid2, Toolbar, Typography } from "@mui/material";
+import {
+  AppBar,
+  Button,
+  Grid2,
+  TextField,
+  Toolbar,
+  Typography,
+} from "@mui/material";
 import HorizIcon from "@mui/icons-material/SwapHoriz";
 import { useEffect, useState } from "react";
-import { getCurrencies } from "../api/currencies";
+import { getConvertedCurrency, getCurrencies } from "../api/currencies";
 import { Currency } from "../types/currencies";
 import CurrencySelect from "../components/CurrencySelect";
 import Loading from "../components/Loading";
@@ -12,7 +19,7 @@ const Homepage = () => {
   const [fromCurrency, setFromCurrency] = useState<Currency>();
   const [toCurrency, setToCurrency] = useState<Currency>();
   const [currencies, setCurrencies] = useState<Currency[]>([]);
-  const [error, setError] = useState("");
+  const [error, setError] = useState({});
 
   useEffect(() => {
     const fetchCurrencies = async () => {
@@ -26,6 +33,27 @@ const Homepage = () => {
 
     fetchCurrencies();
   }, []);
+
+  const convertCurrency = async () => {
+    if (!fromCurrency) {
+      return setError({ from: "Please select a Currency From" });
+    }
+    if (!toCurrency) {
+      return setError({ to: "Please select a Currency To" });
+    }
+    try {
+      const converted = await getConvertedCurrency(
+        fromCurrency.code,
+        toCurrency.code,
+        convert
+      );
+      setConvert(converted);
+    } catch (error) {
+      setError({
+        convert: "There was an error trying to convert. Please try again later",
+      });
+    }
+  };
 
   if (currencies.length === 0) return <Loading />;
 
@@ -65,9 +93,15 @@ const Homepage = () => {
           onChange={(value) => setConvert(value)}
         />
 
-        <Button variant="outlined" startIcon={<HorizIcon />}>
+        <Button
+          onClick={() => convertCurrency()}
+          variant="outlined"
+          startIcon={<HorizIcon />}
+        >
           Convert
         </Button>
+
+        <TextField value={"0"} />
       </Grid2>
     </Grid2>
   );

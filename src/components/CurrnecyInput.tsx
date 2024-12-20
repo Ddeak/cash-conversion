@@ -15,6 +15,7 @@ const CurrencyInput = ({ value, onChange }: CurrencyInputProps) => {
 
   return (
     <TextField
+      label="Amount"
       type="number"
       value={value}
       onChange={onCurrencyChange}
