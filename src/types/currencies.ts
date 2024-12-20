@@ -10,3 +10,10 @@ export type Currency = {
     symbol_first: boolean
     thousands_separator: string 
 }
+
+export type ErrorType = {
+    fetch?: string;
+    from?: string;
+    to?: string;
+    convert?: string;
+};

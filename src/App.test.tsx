@@ -25,7 +25,7 @@ const testCurrencies: Currency[] = [
   {
     code: "code 2",
     decimal_mark: "2",
-    id: 1,
+    id: 2,
     name: "Test Currency 2",
     precision: 2,
     short_code: "short code 2",
@@ -36,28 +36,69 @@ const testCurrencies: Currency[] = [
   },
 ];
 
-test("renders the basic conversion form", async () => {
-  mockedGetCurrencies.mockResolvedValueOnce(testCurrencies);
-  render(<App />);
-  const fromSelect = await screen.findByLabelText("From");
-  userEvent.click(fromSelect);
-  userEvent.selectOptions(
-    screen.getByRole("listbox"),
-    screen.getByRole("option", { name: "Test Currency 1 (a)" })
-  );
+describe("Homepage Tests", () => {
+  beforeEach(() => {
+    jest.resetAllMocks();
+  });
 
-  const toSelect = screen.getByLabelText("To");
-  userEvent.click(toSelect);
-  userEvent.selectOptions(
-    screen.getByRole("listbox"),
-    screen.getByRole("option", { name: "Test Currency 2 (b)" })
-  );
+  test("basic conversion flow", async () => {
+    mockedGetCurrencies.mockResolvedValueOnce(testCurrencies);
+    render(<App />);
+    const fromSelect = await screen.findByLabelText("From");
+    userEvent.click(fromSelect);
+    userEvent.selectOptions(
+      screen.getByRole("listbox"),
+      screen.getByRole("option", { name: "Test Currency 1 (a)" })
+    );
 
-  userEvent.type(screen.getByLabelText("Amount"), "3000");
+    const toSelect = screen.getByLabelText("To");
+    userEvent.click(toSelect);
+    userEvent.selectOptions(
+      screen.getByRole("listbox"),
+      screen.getByRole("option", { name: "Test Currency 2 (b)" })
+    );
 
-  userEvent.click(screen.getByRole("button", { name: "Convert" }));
+    userEvent.type(screen.getByLabelText("Amount"), "3000");
 
-  await waitFor(() => expect(getConvertedCurrency).toHaveBeenCalledTimes(1));
+    userEvent.click(screen.getByRole("button", { name: "Convert" }));
 
-  // TODO if the currency API comes back to life, ensure the correct value is rendered on screen
+    await waitFor(() => expect(getConvertedCurrency).toHaveBeenCalledTimes(1));
+
+    // TODO if the currency API comes back to life, ensure the correct value is rendered on screen
+  });
+
+  test("basic amount validation", async () => {
+    mockedGetCurrencies.mockResolvedValueOnce(testCurrencies);
+    render(<App />);
+    const amountInput = await screen.findByLabelText("Amount");
+
+    userEvent.type(amountInput, "abc200@!#12");
+
+    expect(amountInput).toHaveValue(20012);
+  });
+
+  test("basic error validation", async () => {
+    mockedGetCurrencies.mockResolvedValueOnce(testCurrencies);
+    render(<App />);
+    await screen.findByLabelText("Amount");
+
+    userEvent.click(screen.getByRole("button", { name: "Convert" }));
+
+    expect(
+      screen.queryByText("Please select a Currency From")
+    ).toBeInTheDocument();
+
+    const fromSelect = screen.getByLabelText("From");
+    userEvent.click(fromSelect);
+    userEvent.selectOptions(
+      screen.getByRole("listbox"),
+      screen.getByRole("option", { name: "Test Currency 1 (a)" })
+    );
+
+    userEvent.click(screen.getByRole("button", { name: "Convert" }));
+
+    expect(
+      screen.queryByText("Please select a Currency To")
+    ).toBeInTheDocument();
+  });
 });
