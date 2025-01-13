@@ -6,13 +6,26 @@ import { useEffect, useState } from "react";
 import { Currency, ErrorType } from "../../types/currencies";
 import { getConvertedCurrency, getCurrencies } from "../../api/currencies";
 import Loading from "./Loading";
+import RecentConversionList from "./RecentConversionList";
+
+const convertToRecentItem = (
+  fromCurrency: Currency,
+  toCurrency: Currency,
+  fromValue: string,
+  toValue: string
+) => {
+  return `Converted ${fromValue} ${fromCurrency.name} ->  ${toValue} ${toCurrency.name}`;
+};
+
+const MAX_RECENT_LIST = 5;
 
 const Conversion = () => {
-  const [convert, setConvert] = useState("");
+  const [convert, setConvert] = useState<any>("");
   const [fromCurrency, setFromCurrency] = useState<Currency>();
   const [toCurrency, setToCurrency] = useState<Currency>();
   const [currencies, setCurrencies] = useState<Currency[]>([]);
   const [errors, setErrors] = useState<ErrorType>({});
+  const [recentList, setRecentList] = useState<string[]>([]);
 
   useEffect(() => {
     const fetchCurrencies = async () => {
@@ -38,11 +51,16 @@ const Conversion = () => {
     }
     try {
       const converted = await getConvertedCurrency(
-        fromCurrency.code,
-        toCurrency.code,
+        fromCurrency.short_code,
+        toCurrency.short_code,
         convert
       );
       setConvert(converted);
+
+      setRecentList([
+        convertToRecentItem(fromCurrency, toCurrency, convert, converted.value),
+        ...recentList.slice(0, MAX_RECENT_LIST - 1),
+      ]);
     } catch (error) {
       setErrors({
         convert: "There was an error trying to convert. Please try again later",
@@ -87,10 +105,12 @@ const Conversion = () => {
       </Button>
 
       <TextField
-        value={0}
+        value={convert.value}
         error={!!errors.convert}
         helperText={errors.convert}
       />
+
+      <RecentConversionList recentList={recentList} />
     </>
   );
 };
